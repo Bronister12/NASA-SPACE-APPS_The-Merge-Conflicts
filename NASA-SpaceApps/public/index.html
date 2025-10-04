@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impact Terminal - NASA NEOs</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; background-color: #121212; color: #e0e0e0; padding: 20px; max-width: 800px; margin: auto; }
+        h1 { color: #bb86fc; }
+        button { padding: 10px 15px; font-size: 16px; cursor: pointer; background-color: #03dac6; color: #121212; border: none; border-radius: 5px; font-weight: bold; }
+        #results { margin-top: 20px; }
+        .date-header { font-size: 1.2em; font-weight: bold; color: #03dac6; margin-top: 20px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        .neo-item { background-color: #1e1e1e; border-left: 4px solid #333; padding: 15px; margin-bottom: 10px; border-radius: 4px; }
+        .neo-name { font-weight: bold; font-size: 1.1em; }
+        .hazardous { color: #cf6679; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🚀 Impact Terminal</h1>
+    <p>Near Earth Object Data from NASA</p>
+    <button id="fetchDataBtn">Fetch NEO Data for Today</button>
+    <div id="results"></div>
+
+    <script>
+        document.getElementById('fetchDataBtn').addEventListener('click', async () => {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>Fetching data from the server...</p>';
+
+            const today = new Date().toISOString().split('T')[0];
+            const apiUrl = `/api/neo?start_date=${today}&end_date=${today}`;
+
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`Server returned an error: ${response.status}`);
+                }
+                const data = await response.json();
+                
+                // Clear the loading message
+                resultsDiv.innerHTML = '';
+                
+                if (data.error) {
+                    throw new Error(`API Error: ${data.error}`);
+                }
+
+                const neoDataByDate = data.near_earth_objects;
+                for (const date in neoDataByDate) {
+                    const dateHeader = document.createElement('h2');
+                    dateHeader.className = 'date-header';
+                    dateHeader.textContent = `Objects for ${date}`;
+                    resultsDiv.appendChild(dateHeader);
+
+                    if (neoDataByDate[date].length === 0) {
+                        resultsDiv.innerHTML += '<p>No objects found for this date.</p>';
+                        continue;
+                    }
+
+                    neoDataByDate[date].forEach(neo => {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'neo-item';
+                        
+                        const isHazardous = neo.is_potentially_hazardous_asteroid;
+                        itemDiv.style.borderLeftColor = isHazardous ? '#cf6679' : '#03dac6';
+                        
+                        itemDiv.innerHTML = `
+                            <div class="neo-name">${neo.name}</div>
+                            <div>Estimated Diameter: ${parseFloat(neo.estimated_diameter.meters.estimated_diameter_max).toFixed(2)} meters</div>
+                            <div class="${isHazardous ? 'hazardous' : ''}">Potentially Hazardous: ${isHazardous ? 'Yes' : 'No'}</div>
+                        `;
+                        resultsDiv.appendChild(itemDiv);
+                    });
+                }
+
+            } catch (error) {
+                resultsDiv.innerHTML = `<p style="color: #cf6679;">Failed to fetch data: ${error.message}</p>`;
+                console.error('Error fetching NEO data:', error);
+            }
+        });
+    </script>
+</body>
+</html>
