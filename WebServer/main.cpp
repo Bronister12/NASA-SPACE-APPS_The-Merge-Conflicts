@@ -45,7 +45,7 @@ int main() {
         res.set_content(neo_data.dump(), "application/json");
     });
 
-    std::cout << "Server starting on http://localhost:8080\n";
+    std::cout << "Server starting on http://localhost:8080" << std::endl;
     svr.listen("0.0.0.0", 8080);
     return 0;
 }
