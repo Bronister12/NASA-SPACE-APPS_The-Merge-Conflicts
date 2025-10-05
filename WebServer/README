@@ -1,18 +1,7 @@
 Gemini AI was used throughout creating this web 
-Clone Project & Enter Directory:
 
-Bash:
-git clone https://github.com/your-username/your-repository-name.git && cd your-repository-name
-Build Docker Image:
+Available online:
 
-Bash:
-docker build -t rocket-server .
-Run Docker Container:
-(Replace "YOUR_API_KEY_HERE" with your NASA API key)
+http://64.225.3.25:8080
 
-Bash:
-docker run -d -p 8080:8080 -e NASA_API_KEY="YOUR_API_KEY_HERE" --name rocket-app rocket-server
-Test Server:
 
-Bash:
-curl "http://localhost:8080/api/neo?start_date=2025-10-05&end_date=2025-10-06"
