@@ -3,7 +3,8 @@
     "base",
     "base_keybindings",
     "scene/solarsystem/pha_asteroids/2010_PK9",
-    "scene/solarsystem/pha_asteroids/Icarus"
+    "scene/solarsystem/pha_asteroids/Icarus",
+    "scene/solarsystem/pha_asteroids/Apollo"
   ],
   "camera": {
     "altitude": 2700000000000.0,
@@ -43,7 +44,7 @@
   ],
   "meta": {
     "author": "OpenSpace Team & The Merge Conflicts",
-    "description": "This profile shows potentially hazardous asteroids and their orbits",
+    "description": "This profile shows the orbits of potentially hazardous asteroids",
     "license": "MIT License",
     "name": "PHA Asteroids",
     "url": "https://www.openspaceproject.com",
