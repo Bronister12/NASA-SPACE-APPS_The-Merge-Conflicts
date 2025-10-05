@@ -1,0 +1,10 @@
+How to run it:
+
+Build Dockerfile:
+docker build -t rocket-server .
+
+Place your API Key here:
+docker run -d -p 8080:8080 -e NASA_API_KEY="YOUR_API_KEY_HERE" --name rocket-app rocket-server
+
+Go in the browser:
+http://localhost:8080
