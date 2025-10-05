@@ -1,0 +1,37 @@
+local transforms = asset.require("scene/solarsystem/sun/transforms")
+
+
+
+local icarus = asset.resource("Icarus.csv")
+
+
+local Object = {
+  Identifier = "icarus",
+  Parent = transforms.SunEclipJ2000.Identifier,
+  Renderable = {
+    Type = "RenderableOrbitalKepler",
+    Path = icarus,
+    Format = "SBDB",
+    Segments = 2000,
+    SegmentQuality = 3,
+    Color = { 0.98, 0.09, 0.06 },
+    TrailFade = 28,
+    PointSizeExponent = 9.2
+  },
+  GUI = {
+    Name = "Icarus (1949 MA)",
+    Path = "/Solar System/Small Bodies",
+    Focusable = false
+  }
+}
+
+
+asset.onInitialize(function()
+  openspace.addSceneGraphNode(Object)
+end)
+
+asset.onDeinitialize(function()
+  openspace.removeSceneGraphNode(Object)
+end)
+
+asset.export(Object)
