@@ -57,7 +57,7 @@ asset.export(Object)
         row_values = []
         for key in csv_fields:
             value = data[key]
-            if isinstance(value, str):
+            if key == "full_name":
                 row_values.append(f'"{value}"')
             else:
                 row_values.append(str(value))
