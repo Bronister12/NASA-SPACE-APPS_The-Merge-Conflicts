@@ -42,7 +42,12 @@ local object_position = {
       AscendingNode = 306.5059266984936,
       ArgumentOfPeriapsis = 195.6472531921637,
       MeanAnomaly = 194.3783853998682,
-      Epoch = "2025 11 21 00:00:00",
+      -- Original Epoch from the data is "2025 NOV 21 00:00:00"
+      -- The Epoch value used below is shifted by roughly 24 hours which more closely matches the head of the
+	  -- RenderableOrbitalKepler object used to display the trail.
+      -- TODO: determine the reason for the mismatch between RenderableOrbitalKepler trail head position and the
+      -- KeplerTranslation position and fix it more properly if possible
+	  Epoch = 816868734.1828535,  -- Original - 816955269.1828535, "Corrected" - 816868734.1828535
       Period = 17777573.382853444666,
     },
   },
