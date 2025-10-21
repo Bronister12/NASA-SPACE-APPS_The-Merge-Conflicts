@@ -1,4 +1,5 @@
 local transforms = asset.require("scene/solarsystem/sun/transforms")
+local earth = asset.require("scene/solarsystem/planets/earth/earth")
 -- local bennu = asset.require("scene/solarsystem/missions/osirisrex/bennu")
 local pk9_data_path = asset.resource("2010_PK9.csv")
 
@@ -110,12 +111,38 @@ local Model = {
   }
 }
 
+local DistanceLine = {
+  Identifier = "pk9_distance_line",
+  Renderable = {
+    Type = "RenderableNodeLine",
+    StartNode = 'pk9_position',
+    EndNode = earth.Earth.Identifier
+  },
+  GUI = {
+    Name = "Earth Distance Line",
+    Path = "/Solar System/Small Bodies/2010 PK9"
+  }
+}
+
+local DistanceLabel = {
+  Identifier = "pk9_distance_label",
+  Renderable = {
+    Type = "RenderableDistanceLabel",
+    NodeLine = DistanceLine.Identifier
+  },
+  GUI = {
+    Name = "Distance Label",
+    Path = "/Solar System/Small Bodies/2010 PK9"
+  }
+}
 
 asset.onInitialize(function()
   openspace.addSceneGraphNode(Trail)
   openspace.addSceneGraphNode(object_position)
   openspace.addSceneGraphNode(object_label)
   openspace.addSceneGraphNode(Model)
+  openspace.addSceneGraphNode(DistanceLine)
+  openspace.addSceneGraphNode(DistanceLabel)
 end)
 
 asset.onDeinitialize(function()
@@ -123,6 +150,8 @@ asset.onDeinitialize(function()
   openspace.removeSceneGraphNode(object_position)
   openspace.removeSceneGraphNode(object_label)
   openspace.removeSceneGraphNode(Model)
+  openspace.removeSceneGraphNode(DistanceLine)
+  openspace.removeSceneGraphNode(DistanceLabel)
 end)
 
 asset.export(Trail)
