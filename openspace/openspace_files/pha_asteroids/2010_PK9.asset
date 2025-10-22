@@ -1,0 +1,160 @@
+local transforms = asset.require("scene/solarsystem/sun/transforms")
+local earth = asset.require("scene/solarsystem/planets/earth/earth")
+-- local bennu = asset.require("scene/solarsystem/missions/osirisrex/bennu")
+local pk9_data_path = asset.resource("2010_PK9.csv")
+
+local models = asset.resource({
+  Name = "Bennu Models",
+  Type = "HttpSynchronization",
+  Identifier = "bennu_models",
+  Version = 2
+})
+
+
+local Trail = {
+  Identifier = "2010_pk9",
+  Parent = transforms.SunEclipJ2000.Identifier,
+  Renderable = {
+    Type = "RenderableOrbitalKepler",
+    Path = pk9_data_path,
+    Format = "SBDB",
+    Segments = 2000,
+    SegmentQuality = 3,
+    Color = { 0.98, 0.09, 0.06 },
+    TrailFade = 29,
+    PointSizeExponent = 9.2
+  },
+  GUI = {
+    Name = "(2010 PK9)",
+    Path = "/Solar System/Small Bodies/2010 PK9",
+    Focusable = false
+  }
+}
+
+local object_position = {
+  Identifier = "pk9_position",
+  Parent = transforms.SunEclipJ2000.Identifier,
+  Transform = {
+    Translation = {
+      Type = "KeplerTranslation",
+      Eccentricity = 0.6758634748619897,
+      SemiMajorAxis = 102038864.98553475738,
+      Inclination = 12.58732502214531,
+      AscendingNode = 306.5059266984936,
+      ArgumentOfPeriapsis = 195.6472531921637,
+      MeanAnomaly = 194.3783853998682,
+      -- Original Epoch from the data is "2025 NOV 21 00:00:00"
+      -- The Epoch value used below is shifted by roughly 24 hours which more closely matches the head of the
+	  -- RenderableOrbitalKepler object used to display the trail.
+      -- TODO: determine the reason for the mismatch between RenderableOrbitalKepler trail head position and the
+      -- KeplerTranslation position and fix it more properly if possible
+	  Epoch = 816868734.1828535,  -- Original - 816955269.1828535, "Corrected" - 816868734.1828535
+      Period = 17777573.382853444666,
+    },
+  },
+  GUI = {
+    Name = "2010 PK9 Position",
+    Path = "/Solar System/Small Bodies/2010 PK9",
+    Description = [[Position of 2010 PK9]]
+  }
+}
+
+local object_label = {
+  Identifier = "pk9_label",
+  Parent = object_position.Identifier,
+  -- TimeFrame = {
+  --   Type = "TimeFrameInterval",
+  --   Start = transforms.LaunchTime
+  -- },
+  Renderable = {
+    Type = "RenderableLabel",
+    Enabled = asset.enabled,
+    Text = "2010 PK9",
+    FontSize = 50,
+    Size = 6.5,
+    MinMaxSize = { 4.0, 30.0 },
+    OrientationOption = "Camera View Direction",
+    BlendMode = "Normal",
+    EnableFading = false
+  },
+  GUI = {
+    Name = "2010 PK9 Label",
+    Path = "/Solar System/Small Bodies/2010 PK9",
+    Focusable = false,
+    Description = "Main label for the 2010 PK9 Asteroid."
+  }
+}
+
+local Model = {
+  Identifier = "bennu_model",
+  Parent = object_position.Identifier,
+  -- Transform = {
+  --   Rotation = {
+  --     Type = "SpiceRotation",
+  --     SourceFrame = kernels.Frame.Bennu,
+  --     DestinationFrame = coreKernels.Frame.Galactic
+  --   }
+  -- },
+  Renderable = {
+    Type = "RenderableModel",
+    Enabled = false,
+    GeometryFile = models .. "Bennu_v20_200k_an.obj",
+    LightSources = {
+      transforms.LightSource
+    },
+    SpecularIntensity = 0.0
+  },
+  GUI = {
+    Name = "Bennu Model",
+    Focusable = true,
+    Path = "/Solar System/Small Bodies/2010 PK9"
+  }
+}
+
+local DistanceLine = {
+  Identifier = "pk9_distance_line",
+  Renderable = {
+    Type = "RenderableNodeLine",
+    StartNode = 'pk9_position',
+    EndNode = earth.Earth.Identifier
+  },
+  GUI = {
+    Name = "Earth Distance Line",
+    Path = "/Solar System/Small Bodies/2010 PK9"
+  }
+}
+
+local DistanceLabel = {
+  Identifier = "pk9_distance_label",
+  Renderable = {
+    Type = "RenderableDistanceLabel",
+    NodeLine = DistanceLine.Identifier
+  },
+  GUI = {
+    Name = "Distance Label",
+    Path = "/Solar System/Small Bodies/2010 PK9"
+  }
+}
+
+asset.onInitialize(function()
+  openspace.addSceneGraphNode(Trail)
+  openspace.addSceneGraphNode(object_position)
+  openspace.addSceneGraphNode(object_label)
+  openspace.addSceneGraphNode(Model)
+  openspace.addSceneGraphNode(DistanceLine)
+  openspace.addSceneGraphNode(DistanceLabel)
+end)
+
+asset.onDeinitialize(function()
+  openspace.removeSceneGraphNode(Trail)
+  openspace.removeSceneGraphNode(object_position)
+  openspace.removeSceneGraphNode(object_label)
+  openspace.removeSceneGraphNode(Model)
+  openspace.removeSceneGraphNode(DistanceLine)
+  openspace.removeSceneGraphNode(DistanceLabel)
+end)
+
+asset.export(Trail)
+asset.export(object_position)
+asset.export(object_label)
+asset.export(Model)
